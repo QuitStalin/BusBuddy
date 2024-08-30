@@ -2,15 +2,31 @@
 import React, { useState } from "react";
 import {
   View,
-  Image,
   Text,
   TextInput,
+  Button,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
+import {
+  useFonts,
+  RadioCanada_400Regular,
+  RadioCanada_600SemiBold,
+  RadioCanada_700Bold,
+  RadioCanada_300Light,
+} from "@expo-google-fonts/radio-canada";
+import Animated from "react-native-reanimated";
+import {
+  FadeIn,
+  FadeInUp,
+  FadeInDown,
+  FadeInLeft,
+} from "react-native-reanimated";
+
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -18,6 +34,13 @@ export default function SignupScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [fontsLoaded] = useFonts({
+    RadioCanadaRegular: RadioCanada_400Regular,
+    RadioCanadaSemiBold: RadioCanada_600SemiBold,
+    RadioCanadaBold: RadioCanada_700Bold,
+    RadioCanadaLight: RadioCanada_300Light,
+  });
 
   const handleSignup = () => {
     router.replace("/main");
@@ -32,25 +55,28 @@ export default function SignupScreen() {
       />
 
       <View style={styles.title}>
-        <Text style={styles.titleText1}>Dobro Došli!</Text>
-        <Text style={styles.titleText2}>Sign Up:</Text>
+        <Animated.Text style={styles.titleText1}>Dobro Došli!</Animated.Text>
+        <Animated.Text style={styles.titleText2}>Sign Up:</Animated.Text>
       </View>
 
       <View style={styles.logoContainer}>
-        <Image
-          source={require("./assets/BusMateLogo.png")}
+        <Animated.Image
+          entering={FadeInUp.delay(200).duration(1000).springify()}
+          source={require("./assets/BusBuddyLogo.png")}
           style={styles.logo}
         />
-        <Text
+        <Animated.Text
+          entering={FadeInUp.delay(400).duration(1000)}
           style={styles.regularText}
         >
           "Ride Smart, Ride Easy."
-        </Text>
+        </Animated.Text>
       </View>
 
       <View style={styles.form}>
-        <View
-        style={styles.inputGroup}
+        <Animated.View
+          entering={FadeInLeft.delay(400).duration(1000)}
+          style={styles.inputGroup}
         >
           <Text style={styles.label}>Ime</Text>
           <TextInput
@@ -59,9 +85,10 @@ export default function SignupScreen() {
             value={name}
             onChangeText={(text) => setName(text)}
           />
-        </View>
+        </Animated.View>
 
-        <View
+        <Animated.View
+          entering={FadeInLeft.delay(600).duration(1000)}
           style={styles.inputGroup}
         >
           <Text style={styles.label}>Email</Text>
@@ -72,9 +99,10 @@ export default function SignupScreen() {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
-        </View>
+        </Animated.View>
 
-        <View
+        <Animated.View
+          entering={FadeInLeft.delay(800).duration(1000)}
           style={styles.inputGroup}
         >
           <Text style={styles.label}>Lozinka</Text>
@@ -85,24 +113,26 @@ export default function SignupScreen() {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-        </View>
+        </Animated.View>
       </View>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
+        <AnimatedTouchable
+          entering={FadeInDown.delay(300).duration(1000)}
           style={styles.button}
           onPress={() => router.push("/signup")}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </AnimatedTouchable>
+        <AnimatedTouchable
+          entering={FadeInDown.delay(500).duration(1000)}
           style={[styles.button, styles.button2]}
           onPress={() => router.push("../")}
         >
-          <Image
+          <Animated.Image
             source={require("./assets/Google.png")}
             style={{ width: 25, height: 25 }}
           />
-        </TouchableOpacity>
+        </AnimatedTouchable>
       </View>
     </SafeAreaView>
   );
@@ -121,14 +151,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#272727",
   },
   titleText1: {
-    color: "#F4CE14",
+    fontFamily: "RadioCanadaRegular",
     fontSize: 15,
+    color: "#F4CE14",
   },
   titleText2: {
-    color: "#F4CE14",
+    fontFamily: "RadioCanadaBold",
     fontSize: 50,
+    color: "#F4CE14",
   },
   regularText: {
+    fontFamily: "RadioCanadaSemiBold",
+    fontSize: 16,
     marginTop: 5,
   },
   logoContainer: {
@@ -137,8 +171,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 220,
-    height: 39,
+    width: '80%',
+    height: undefined,
+    aspectRatio: 4.64,
   },
   form: {
     flex: 0.4,
@@ -150,6 +185,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    fontFamily: "RadioCanadaSemiBold",
+    marginBottom: 5,
     color: "#272727",
   },
   input: {
@@ -176,6 +213,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   buttonText: {
+    fontFamily: "RadioCanadaSemiBold",
+    fontSize: 17,
     color: "#F4CE14",
   },
   button2: {

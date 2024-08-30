@@ -1,9 +1,9 @@
 {
   "expo": {
     "splash": {
-      "image": "",
+      "image": "./app/assets/SplashLogo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F4CE14"
     },
     "scheme": "acme",
     "web": {

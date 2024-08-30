@@ -1,68 +1,93 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { useFonts, Quicksand_600SemiBold } from "@expo-google-fonts/quicksand";
+import { RadioCanada_600SemiBold } from "@expo-google-fonts/radio-canada";
+import Animated from "react-native-reanimated";
+import {
+  FadeIn,
+  FadeInUp,
+  FadeInDown,
+  FadeInLeft,
+} from "react-native-reanimated";
 import * as SplashScreen from "expo-splash-screen";
 
+// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function App() {
   const router = useRouter();
 
-  useEffect(() => {
-    const hideSplashScreen = async () => {
-      await SplashScreen.hideAsync();
-    };
+  const [fontsLoaded] = useFonts({
+    QuicksandSemiBold: Quicksand_600SemiBold,
+    RadioCanadaSemiBold: RadioCanada_600SemiBold,
+  });
 
-    hideSplashScreen();
-  }, []);
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync(); // Hide the splash screen when resources are ready
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null; // Alternatively, you can return a placeholder view
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
-        <Image
+        <Animated.Image
+          entering={FadeIn.duration(500)}
           source={require("./assets/welcomeImage.png")}
           style={styles.image}
         />
       </View>
 
       <View style={styles.middleSection}>
-        <Image
-          source={require("./assets/BusMateLogo.png")}
+        <Animated.Image
+          entering={FadeInUp.delay(200).duration(1000).springify()}
+          source={require("./assets/BusBuddyLogo.png")}
           style={styles.logo}
         />
 
-        <Text
+        <Animated.Text
+          entering={FadeInUp.delay(400).duration(1000)}
           style={[styles.regularText, styles.text1]}
         >
           "Ride Smart, Ride Easy."
-        </Text>
+        </Animated.Text>
 
-        <Text
+        <Animated.Text
+          entering={FadeInUp.delay(400).duration(1000)}
           style={styles.regularText}
         >
           Uživajte u bezbrižnom putovanju, dok mi brinemo o svim detaljima!
-        </Text>
+        </Animated.Text>
       </View>
 
       <View style={styles.bottomSection}>
-        <TouchableOpacity
+        <AnimatedTouchable
+          entering={FadeInDown.delay(300).duration(1000)}
           style={styles.button}
           onPress={() => router.push("/login")}
         >
           <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
+        </AnimatedTouchable>
 
-        <TouchableOpacity
+        <AnimatedTouchable
+          entering={FadeInDown.delay(500).duration(1000)}
           style={[styles.button, styles.button2]}
           onPress={() => router.push("/signup")}
         >
           <Text style={[styles.buttonText, styles.yellowColor]}>Sign Up</Text>
-        </TouchableOpacity>
+        </AnimatedTouchable>
       </View>
 
       <View style={styles.illustrationSection}>
-        <Image
+        <Animated.Image
+          entering={FadeInLeft.duration(500)}
           source={require("./assets/illustration1.png")}
           style={styles.illustration}
         />
@@ -77,22 +102,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#F4CE14",
   },
   topSection: {
-    height: "30%",
+    height: "30%", // 25% of the screen height
     justifyContent: "center",
     alignItems: "center",
   },
   middleSection: {
-    height: "30%",
+    height: "30%", // 30% of the screen height
     justifyContent: "center",
     alignItems: "center",
   },
   bottomSection: {
-    height: "20%",
+    height: "20%", // 20% of the screen height
     justifyContent: "flex-start",
     alignItems: "center",
   },
   illustrationSection: {
-    height: "20%",
+    height: "20%", // 20% of the screen height
   },
   image: {
     width: "100%",
@@ -105,9 +130,10 @@ const styles = StyleSheet.create({
   logo: {
     width: "85%",
     height: undefined,
-    aspectRatio: 5.65,
+    aspectRatio: 4.64,
   },
   regularText: {
+    fontFamily: "QuicksandSemiBold",
     fontSize: 16,
     color: "#3C3C3C",
     textAlign: "center",
@@ -127,6 +153,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
+    fontFamily: "RadioCanadaSemiBold",
     fontSize: 17,
     color: "#272727",
   },

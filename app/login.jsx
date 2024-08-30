@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Image,
   Text,
   TextInput,
   StyleSheet,
@@ -11,6 +10,21 @@ import {
   StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
+import {
+  useFonts,
+  RadioCanada_400Regular,
+  RadioCanada_600SemiBold,
+  RadioCanada_700Bold,
+  RadioCanada_300Light,
+} from "@expo-google-fonts/radio-canada";
+import Animated from "react-native-reanimated";
+import {
+  FadeInUp,
+  FadeInDown,
+  FadeInLeft,
+} from "react-native-reanimated";
+
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -18,6 +32,17 @@ export default function LoginScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [fontsLoaded] = useFonts({
+    RadioCanadaRegular: RadioCanada_400Regular,
+    RadioCanadaSemiBold: RadioCanada_600SemiBold,
+    RadioCanadaBold: RadioCanada_700Bold,
+    RadioCanadaLight: RadioCanada_300Light,
+  });
+
+  if (!fontsLoaded) {
+    return null; // or return a loading spinner/component
+  }
 
   const handleLogin = () => {
     if (name === "admin" && password === "admin") {
@@ -36,24 +61,27 @@ export default function LoginScreen() {
       />
 
       <View style={styles.title}>
-        <Text style={styles.titleText1}>Dobro Došli!</Text>
-        <Text style={styles.titleText2}>Login:</Text>
+        <Animated.Text style={styles.titleText1}>Dobro Došli!</Animated.Text>
+        <Animated.Text style={styles.titleText2}>Login:</Animated.Text>
       </View>
 
       <View style={styles.logoContainer}>
-        <Image
-          source={require("./assets/BusMateLogo.png")}
+        <Animated.Image
+          entering={FadeInUp.delay(200).duration(1000).springify()}
+          source={require("./assets/BusBuddyLogo.png")}
           style={styles.logo}
         />
-        <Text
+        <Animated.Text
+          entering={FadeInUp.delay(400).duration(1000)}
           style={styles.regularText}
         >
           "Ride Smart, Ride Easy."
-        </Text>
+        </Animated.Text>
       </View>
 
       <View style={styles.form}>
-        <View
+        <Animated.View
+          entering={FadeInLeft.delay(400).duration(1000)}
           style={styles.inputGroup}
         >
           <Text style={styles.label}>Ime</Text>
@@ -63,9 +91,10 @@ export default function LoginScreen() {
             value={name}
             onChangeText={(text) => setName(text)}
           />
-        </View>
+        </Animated.View>
 
-        <View
+        <Animated.View
+          entering={FadeInLeft.delay(600).duration(1000)}
           style={styles.inputGroup}
         >
           <Text style={styles.label}>Lozinka</Text>
@@ -76,24 +105,26 @@ export default function LoginScreen() {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
-        </View>
+        </Animated.View>
       </View>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
+        <AnimatedTouchable
+          entering={FadeInDown.delay(300).duration(1000)}
           style={styles.button}
           onPress={handleLogin}
         >
           <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </AnimatedTouchable>
+        <AnimatedTouchable
+          entering={FadeInDown.delay(500).duration(1000)}
           style={[styles.button, styles.button2]}
           onPress={() => router.push("../")}
         >
-          <Image
+          <Animated.Image
             source={require("./assets/Google.png")}
             style={{ width: 25, height: 25 }}
           />
-        </TouchableOpacity>
+        </AnimatedTouchable>
       </View>
     </SafeAreaView>
   );
@@ -112,14 +143,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#272727",
   },
   titleText1: {
+    fontFamily: "RadioCanadaRegular",
     fontSize: 15,
     color: "#F4CE14",
   },
   titleText2: {
+    fontFamily: "RadioCanadaBold",
     fontSize: 50,
     color: "#F4CE14",
   },
   regularText: {
+    fontFamily: "RadioCanadaSemiBold",
     fontSize: 16,
     marginTop: 5,
   },
@@ -129,8 +163,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 220,
-    height: 39,
+    width: '80%',
+    height: undefined,
+    aspectRatio: 4.64,
   },
   form: {
     height: "30%",
@@ -142,6 +177,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    fontFamily: "RadioCanadaSemiBold",
     marginBottom: 5,
     color: "#272727",
   },
@@ -169,6 +205,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   buttonText: {
+    fontFamily: "RadioCanadaSemiBold",
     fontSize: 17,
     color: "#F4CE14",
   },
