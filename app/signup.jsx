@@ -20,11 +20,11 @@ import {
 } from "@expo-google-fonts/radio-canada";
 import Animated from "react-native-reanimated";
 import {
-  FadeIn,
   FadeInUp,
   FadeInDown,
   FadeInLeft,
 } from "react-native-reanimated";
+import axios from 'axios';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -42,8 +42,21 @@ export default function SignupScreen() {
     RadioCanadaLight: RadioCanada_300Light,
   });
 
-  const handleSignup = () => {
-    router.replace("/main");
+  const handleSignup = async () => {
+    try {
+      const url = 'https://script.google.com/macros/s/AKfycbwpulMSmWCLwjmFIJi1c1YcuPxZ6ErO3eR7yTchpCHksCm51sEqeCX_8k1dC0YZ1VqS/exec';
+      const response = await axios.get(url, {
+        params: {
+          name: name,
+          email: email,
+          password: password
+        }
+      });
+      alert('Data submitted successfully');
+    } catch (error) {
+      console.error(error); // Log error details
+      alert('Error submitting data: ' + error.message);
+    }
   };
 
   return (
@@ -119,7 +132,7 @@ export default function SignupScreen() {
         <AnimatedTouchable
           entering={FadeInDown.delay(300).duration(1000)}
           style={styles.button}
-          onPress={() => router.push("/signup")}
+          onPress={handleSignup}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </AnimatedTouchable>
