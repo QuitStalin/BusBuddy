@@ -23,6 +23,7 @@ import {
   FadeInDown,
   FadeInLeft,
 } from "react-native-reanimated";
+import axios from 'axios';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -44,13 +45,30 @@ export default function LoginScreen() {
     return null; // or return a loading spinner/component
   }
 
-  const handleLogin = () => {
-    if (name === "admin" && password === "admin") {
-      router.replace("/main");
-    } else {
-      alert("Incorrect name or password. Please try again.");
+  const handleLogin = async () => {
+    try {
+      const url = 'https://script.google.com/macros/s/AKfycbxiDBNFMVonFWAVYzuAs9AirXRwHg0TvejT4Wl5OfQ5KkkAe045eZHo5sruIiunNh1g/exec';
+      const response = await axios.get(url, {
+        params: {
+          type: 'login',  // Specify the request type as 'login'
+          username: name, // Pass the username
+          password: password // Pass the password
+        }
+      });
+      
+      // Check the response text
+      if (response.data === 'Login Successful') {
+        alert('Login Successful');
+        router.push('/main'); // Redirect to the main directory
+      } else {
+        alert('Login Failed: ' + response.data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Error submitting data: ' + error.message);
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>

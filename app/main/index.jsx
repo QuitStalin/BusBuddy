@@ -266,19 +266,6 @@ export default function MainScreen() {
           />
         )}
       </MapView>
-      <View style={styles.overlay}>
-        <View style={styles.searchBarContainer}>
-          <TextInput
-            style={styles.searchBar}
-            placeholder="Search"
-            placeholderTextColor="#bdbdbd"
-          />
-        </View>
-        <Image
-          source={require("../assets/profile.jpg")} // Adjust the path as necessary
-          style={styles.profileIcon}
-        />
-      </View>
       <View style={styles.buttonContainer}>
         <Button title="Get Location" onPress={focusOnLocation} />
       </View>
