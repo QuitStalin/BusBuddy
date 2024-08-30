@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
-  ActivityIndicator, // Add an ActivityIndicator for loading state
+  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -55,7 +55,7 @@ export default function SignupScreen() {
       });
       alert('Data submitted successfully');
     } catch (error) {
-      console.error(error); // Log error details
+      console.error(error);
       alert('Error submitting data: ' + error.message);
     }
   };
@@ -67,9 +67,9 @@ export default function SignupScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
-        barStyle="dark-content" // for dark mode content on status bar
-        backgroundColor="#F4CE14" // dark background color for status bar
-        translucent={true} // to make status bar translucent
+        barStyle="dark-content"
+        backgroundColor="#F4CE14"
+        translucent={true}
       />
 
       <View style={styles.title}>
