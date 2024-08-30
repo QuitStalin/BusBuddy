@@ -45,7 +45,7 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     try {
-      const url = 'https://script.google.com/macros/s/AKfycbwpulMSmWCLwjmFIJi1c1YcuPxZ6ErO3eR7yTchpCHksCm51sEqeCX_8k1dC0YZ1VqS/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbzVMxLLI1esJVVWl32sx2GZrsDeTeAEsbec5w9jks9fgkdEHI03hiXhrBo0eVfhT-0g/exec';
       const response = await axios.get(url, {
         params: {
           name: name,
