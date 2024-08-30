@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  ActivityIndicator, // Add an ActivityIndicator for loading state
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -58,6 +59,10 @@ export default function SignupScreen() {
       alert('Error submitting data: ' + error.message);
     }
   };
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator style={styles.loader} size="large" color="#F4CE14" />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -233,5 +238,11 @@ const styles = StyleSheet.create({
   button2: {
     backgroundColor: "white",
     borderColor: "transparent",
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F4CE14",
   },
 });
