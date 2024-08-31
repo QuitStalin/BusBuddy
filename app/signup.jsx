@@ -163,10 +163,10 @@ export default function SignupScreen() {
         <AnimatedTouchable
           entering={FadeInDown.delay(500).duration(1000)}
           style={[styles.button, styles.button2]}
-          onPress={() => router.push("../")}
+          onPress={() => router.push("/")}
         >
           <Animated.Image
-            source={require("./assets/Google.png")}
+            source={require("./assets/Left.png")}
             style={{ width: 25, height: 25 }}
           />
         </AnimatedTouchable>

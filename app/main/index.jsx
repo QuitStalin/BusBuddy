@@ -11,6 +11,7 @@ import {
   StatusBar,
   ScrollView,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
@@ -203,11 +204,19 @@ const customMapStyle = [
   },
 ];
 
-const Card = ({ title }) => (
-  <View style={styles.card}>
-    <Text style={styles.cardText}>{title}</Text>
-  </View>
+const screenHeight = Dimensions.get("window").height;
+const twentyPercentOfScreenHeight = screenHeight * 0.2;
+
+const Card = ({ title, location, destination, onPress }) => (
+  <TouchableOpacity onPress={() => onPress(title)}>
+    <View style={styles.card}>
+      <Text style={styles.cardText}>{title}</Text>
+      <Text style={styles.cardInfo}>Location: {location}</Text>
+      <Text style={styles.cardInfo}>Destination: {destination}</Text>
+    </View>
+  </TouchableOpacity>
 );
+
 
 export default function MainScreen() {
   const initialLocation = {
@@ -215,31 +224,30 @@ export default function MainScreen() {
     longitude: 18.67347,
   };
   const [myLocation, setmyLocation] = useState(initialLocation);
-  const [pin, setPin] = useState({});
   const [region, setRegion] = useState(null);
   const mapRef = React.useRef();
-  const local = {
-    latitude: "44.53746",
-    longitude: "18.67347",
-  };
+
+  const [cardsData, setCardsData] = useState([
+    { title: "Bus 1", location: "Mostar", destination: "Banjaluka" },
+    { title: "Bus 2", location: "Mostar", destination: "Tuzla" },
+    { title: "Bus 3", location: "Lukavac", destination: "Mostar" },
+    // Add more card data as needed
+  ]);
+
+  const [filteredCards, setFilteredCards] = useState(cardsData);
+  const [locationSearch, setLocationSearch] = useState("");
+  const [destinationSearch, setDestinationSearch] = useState("");
 
   useEffect(() => {
-    setPin(local);
-    _getLocation();
-  }, []);
+    filterCards();
+  }, [locationSearch, destinationSearch]);
 
-  const _getLocation = async () => {
-    try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.warn("Permission to access location was denied");
-        return;
-      }
-      let location = await Location.getCurrentPositionAsync({});
-      setmyLocation(location.coords);
-    } catch (err) {
-      console.warn(err);
-    }
+  const filterCards = () => {
+    const filtered = cardsData.filter(card =>
+      card.location.toLowerCase().includes(locationSearch.toLowerCase()) &&
+      card.destination.toLowerCase().includes(destinationSearch.toLowerCase())
+    );
+    setFilteredCards(filtered);
   };
 
   const focusOnLocation = () => {
@@ -255,20 +263,38 @@ export default function MainScreen() {
       }
     }
   };
+  focusOnLocation();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <TextInput
           style={styles.searchBar}
-          placeholder="Search"
+          placeholder="Search by Location"
           placeholderTextColor="#bdbdbd"
+          value={locationSearch}
+          onChangeText={text => setLocationSearch(text)}
         />
         <TextInput
           style={styles.searchBar}
-          placeholder="Search"
+          placeholder="Search by Destination"
           placeholderTextColor="#bdbdbd"
+          value={destinationSearch}
+          onChangeText={text => setDestinationSearch(text)}
         />
+      </View>
+      <View style={styles.cards}>
+        <ScrollView style={styles.scrollView}>
+          {filteredCards.map(card => (
+            <Card
+              key={card.title}
+              title={card.title}
+              location={card.location}
+              destination={card.destination}
+              onPress={title => console.log(title)}
+            />
+          ))}
+        </ScrollView>
       </View>
       <MapView
         style={styles.map}
@@ -278,43 +304,29 @@ export default function MainScreen() {
         provider="google"
         customMapStyle={customMapStyle}
       >
-        {pin.latitude && pin.longitude && (
-          <Marker
-            coordinate={{
-              latitude: parseFloat(pin.latitude),
-              longitude: parseFloat(pin.longitude),
-            }}
-            title="Local Pin"
-          />
-        )}
       </MapView>
-      <ScrollView style={styles.scrollView}>
-        <Card title="Bus 1" />
-        <Card title="Bus 2" />
-        <Card title="Bus 3" />
-        <Card title="Bus 4" />
-        <Card title="Bus 5" />
-      </ScrollView>
     </SafeAreaView>
-  );
-}
+)}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
+    backgroundColor: '#000000'
   },
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
   headerContainer: {
-    height: '20%',
+    height: twentyPercentOfScreenHeight,
     justifyContent: 'space-evenly',
     alignItems: "center",
     width: '100%',
     paddingHorizontal: 10,
     backgroundColor: '#F4CE14',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   searchBar: {
     width: '100%',
@@ -323,13 +335,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 40,
   },
+  cards: {
+    position: 'absolute',
+    marginBottom: 10,
+    bottom: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 1, // Ensure cards appear above the map
+    maxHeight: '40%',
+  },
   scrollView: {
-    height: '40%',
-    backgroundColor: '#F4CE14',
+    height: '100%',
+    width: '100%',
     padding: 10,
   },
   card: {
-    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
+    backgroundColor: '#F4CE14',
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
@@ -338,9 +362,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    width: '100%',
   },
   cardText: {
     fontSize: 16,
-    color: '#333',
+  },
+  cardInfo: {
+    fontSize: 14,
   },
 });

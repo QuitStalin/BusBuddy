@@ -53,6 +53,8 @@ export default function LoginScreen() {
   }
 
   const handleLogin = () => {
+    router.push("/main")
+    return
     axios
       .get(
         "https://script.google.com/macros/s/AKfycbxCckvojV8mcjNkXhWqcwglBhpAiFe7B1x1lEcydkgqCD6zrBsumPlItlLQ6Dba9Myp/exec",
@@ -156,10 +158,10 @@ export default function LoginScreen() {
             <AnimatedTouchable
               entering={FadeInDown.delay(500).duration(1000)}
               style={[styles.button, styles.button2]}
-              onPress={() => router.push("../")}
+              onPress={() => router.push("/")}
             >
               <Animated.Image
-                source={require("./assets/Google.png")}
+                source={require("./assets/Left.png")}
                 style={{ width: 25, height: 25 }}
               />
             </AnimatedTouchable>
