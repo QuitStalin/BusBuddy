@@ -93,7 +93,7 @@ export default function LoginScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.title}>
-          <Animated.Text style={styles.titleText1}>Dobro ošli!</Animated.Text>
+          <Animated.Text style={styles.titleText1}>Dobro došli!</Animated.Text>
           <Animated.Text style={styles.titleText2}>Login:</Animated.Text>
         </View>
 

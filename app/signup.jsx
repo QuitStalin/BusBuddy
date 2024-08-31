@@ -85,7 +85,7 @@ export default function SignupScreen() {
       >
 
       <View style={styles.title}>
-        <Animated.Text style={styles.titleText1}>Dobro Došli!</Animated.Text>
+        <Animated.Text style={styles.titleText1}>Dobro došli!</Animated.Text>
         <Animated.Text style={styles.titleText2}>Sign Up:</Animated.Text>
       </View>
 

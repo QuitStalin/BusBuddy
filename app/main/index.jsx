@@ -7,6 +7,10 @@ import {
   Button,
   TextInput,
   Image,
+  SafeAreaView,
+  StatusBar,
+  ScrollView,
+  Text,
 } from "react-native";
 import { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
@@ -199,6 +203,12 @@ const customMapStyle = [
   },
 ];
 
+const Card = ({ title }) => (
+  <View style={styles.card}>
+    <Text style={styles.cardText}>{title}</Text>
+  </View>
+);
+
 export default function MainScreen() {
   const initialLocation = {
     latitude: 44.53746,
@@ -247,7 +257,19 @@ export default function MainScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search"
+          placeholderTextColor="#bdbdbd"
+        />
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search"
+          placeholderTextColor="#bdbdbd"
+        />
+      </View>
       <MapView
         style={styles.map}
         region={region}
@@ -266,50 +288,59 @@ export default function MainScreen() {
           />
         )}
       </MapView>
-      <View style={styles.buttonContainer}>
-        <Button title="Get Location" onPress={focusOnLocation} />
-      </View>
-    </View>
+      <ScrollView style={styles.scrollView}>
+        <Card title="Bus 1" />
+        <Card title="Bus 2" />
+        <Card title="Bus 3" />
+        <Card title="Bus 4" />
+        <Card title="Bus 5" />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: StatusBar.currentHeight,
   },
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    padding: 10,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
+  headerContainer: {
+    height: '20%',
+    justifyContent: 'space-evenly',
     alignItems: "center",
-    zIndex: 1,
-  },
-  searchBarContainer: {
-    flex: 1,
+    width: '100%',
+    paddingHorizontal: 10,
+    backgroundColor: '#F4CE14',
   },
   searchBar: {
+    width: '100%',
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 15,
     height: 40,
   },
-  profileIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  scrollView: {
+    height: '40%',
+    backgroundColor: '#F4CE14',
+    padding: 10,
   },
-  buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    width: "100%",
-    alignItems: "center",
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  cardText: {
+    fontSize: 16,
+    color: '#333',
   },
 });
