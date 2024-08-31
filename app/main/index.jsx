@@ -438,25 +438,9 @@ export default function MainScreen() {
     { title: "Bus 1", location: "Siporeks", destination: "Solana" },
     { title: "Bus 2", location: "Sicki_Brod", destination: "Siporeks" },
     { title: "Bus 3", location: "Solana", destination: "Irac" },
-    { title: "Bus 4", location: "Irac", destination: "Lukavac" },
-    { title: "Bus 5", location: "Lukavac", destination: "Mostar" },
-    { title: "Bus 6", location: "Mostar", destination: "Tuzla" },
-    { title: "Bus 7", location: "Tuzla", destination: "Zenica" },
-    { title: "Bus 8", location: "Zenica", destination: "Sarajevo" },
-    { title: "Bus 9", location: "Sarajevo", destination: "Banja Luka" },
-    { title: "Bus 10", location: "Banja Luka", destination: "Trebinje" },
-    { title: "Bus 11", location: "Trebinje", destination: "Neum" },
-    { title: "Bus 12", location: "Neum", destination: "Dubrovnik" },
-    { title: "Bus 13", location: "Dubrovnik", destination: "Split" },
-    { title: "Bus 14", location: "Split", destination: "Zadar" },
-    { title: "Bus 15", location: "Zadar", destination: "Rijeka" },
-    { title: "Bus 16", location: "Rijeka", destination: "Pecs" },
-    { title: "Bus 17", location: "Pecs", destination: "Budapest" },
-    { title: "Bus 18", location: "Budapest", destination: "Vienna" },
-    { title: "Bus 19", location: "Vienna", destination: "Prague" },
-    { title: "Bus 20", location: "Prague", destination: "Berlin" },
+    { title: "Bus 4", location: "Sarajevo", destination: "Ilidža" }
+    // ... other card data here
   ]);
-  
 
   const [filteredCards, setFilteredCards] = useState(cardsData);
   const [locationSearch, setLocationSearch] = useState("");
@@ -473,9 +457,14 @@ export default function MainScreen() {
   useEffect(() => {
     if (startCoordinates && endCoordinates) {
       fetchRoute();
-      focusOnMarkers();
     }
   }, [startCoordinates, endCoordinates]);
+
+  useEffect(() => {
+    if (routeCoordinates.length > 0) {
+      focusOnMarkers();
+    }
+  }, [routeCoordinates]);
 
   const filterCards = () => {
     const filtered = cardsData.filter(card =>
@@ -570,8 +559,8 @@ export default function MainScreen() {
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeColor="#F4CE14" // Promenjena boja putanje
-            strokeWidth={3}      // Debljina putanje
+            strokeColor="#F4CE14" // Changed route color
+            strokeWidth={3}      // Route width
           />
         )}
       </MapView>

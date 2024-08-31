@@ -53,8 +53,6 @@ export default function LoginScreen() {
   }
 
   const handleLogin = () => {
-    router.push("/main")
-    return
     axios
       .get(
         "https://script.google.com/macros/s/AKfycbxCckvojV8mcjNkXhWqcwglBhpAiFe7B1x1lEcydkgqCD6zrBsumPlItlLQ6Dba9Myp/exec",
