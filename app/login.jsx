@@ -120,7 +120,7 @@ export default function LoginScreen() {
             entering={FadeInLeft.delay(400).duration(1000)}
             style={styles.inputGroup}
           >
-            <Text style={styles.label}>Name:</Text>
+            <Text style={styles.label}>Ime:</Text>
             <TextInput
               style={styles.input}
               placeholder="Upišite vaše ime"
