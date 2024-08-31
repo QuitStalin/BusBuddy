@@ -1,13 +1,18 @@
-// app/signup.js
 import React, { useState } from "react";
 import {
   View,
+  Image,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Dimensions,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -23,14 +28,16 @@ import {
   FadeInDown,
   FadeInLeft,
 } from "react-native-reanimated";
-import axios from 'axios';
+import axios from './axiosConfig'; 
+import useKeyboardVisibility from './useKeyboardVisibility';
 
+let ScreenHeight = Dimensions.get("window").height;
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function LoginScreen() {
   const router = useRouter();
+  const isKeyboardVisible = useKeyboardVisibility();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -42,108 +49,124 @@ export default function LoginScreen() {
   });
 
   if (!fontsLoaded) {
-    return null; // or return a loading spinner/component
+    return null;
   }
 
-  const handleLogin = async () => {
-    try {
-      const url = 'https://script.google.com/macros/s/AKfycbxiDBNFMVonFWAVYzuAs9AirXRwHg0TvejT4Wl5OfQ5KkkAe045eZHo5sruIiunNh1g/exec';
-      const response = await axios.get(url, {
-        params: {
-          type: 'login',  // Specify the request type as 'login'
-          username: name, // Pass the username
-          password: password // Pass the password
+  const handleLogin = () => {
+    axios
+      .get(
+        "https://script.google.com/macros/s/AKfycbxCckvojV8mcjNkXhWqcwglBhpAiFe7B1x1lEcydkgqCD6zrBsumPlItlLQ6Dba9Myp/exec",
+        {
+          params: {
+            type: "login",
+            username: email,
+            password: password,
+          },
         }
+      )
+      .then((response) => {
+        if (response.data === "Login Successful") {
+          Alert.alert("Login Status", "Login Successful");
+          router.push("/main");
+        } else {
+          Alert.alert("Login Error", "Email or password is not correct");
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Login Error", "An error occurred while trying to log in.");
       });
-      
-      // Check the response text
-      if (response.data === 'Login Successful') {
-        alert('Login Successful');
-        router.push('/main'); // Redirect to the main directory
-      } else {
-        alert('Login Failed: ' + response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      alert('Error submitting data: ' + error.message);
-    }
   };
   
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
-        barStyle="dark-content" // for dark mode content on status bar
-        backgroundColor="#F4CE14" // dark background color for status bar
-        translucent={true} // to make status bar translucent
+        barStyle="dark-content"
+        backgroundColor="#F4CE14"
+        translucent={true}
       />
 
-      <View style={styles.title}>
-        <Animated.Text style={styles.titleText1}>Dobro Došli!</Animated.Text>
-        <Animated.Text style={styles.titleText2}>Login:</Animated.Text>
-      </View>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Add this line
+      >
 
-      <View style={styles.logoContainer}>
-        <Animated.Image
-          entering={FadeInUp.delay(200).duration(1000).springify()}
-          source={require("./assets/BusBuddyLogo.png")}
-          style={styles.logo}
-        />
-        <Animated.Text
-          entering={FadeInUp.delay(400).duration(1000)}
-          style={styles.regularText}
-        >
-          "Ride Smart, Ride Easy."
-        </Animated.Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.title}>
+          <Animated.Text style={styles.titleText1}>Dobro ošli!</Animated.Text>
+          <Animated.Text style={styles.titleText2}>Login:</Animated.Text>
+        </View>
 
-      <View style={styles.form}>
-        <Animated.View
-          entering={FadeInLeft.delay(400).duration(1000)}
-          style={styles.inputGroup}
-        >
-          <Text style={styles.label}>Ime</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Upišite vaše ime"
-            value={name}
-            onChangeText={(text) => setName(text)}
-          />
-        </Animated.View>
+        {!isKeyboardVisible && (
+          <View style={styles.logoContainer}>
+            <Animated.Image
+              entering={FadeInUp.delay(0).duration(1000).springify()}
+              source={require("./assets/BusBuddyLogo.png")}
+              style={styles.logo}
+            />
+            <Animated.Text
+              entering={FadeInUp.delay(300).duration(1000)}
+              style={styles.regularText}
+            >
+              "Ride Smart, Ride Easy."
+            </Animated.Text>
+          </View>
+        )}
 
-        <Animated.View
-          entering={FadeInLeft.delay(600).duration(1000)}
-          style={styles.inputGroup}
-        >
-          <Text style={styles.label}>Lozinka</Text>
-          <TextInput
-            style={styles.input}
-            placeholder=". . . . . . . . . . ."
-            secureTextEntry
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-        </Animated.View>
-      </View>
-      <View style={styles.buttonsContainer}>
-        <AnimatedTouchable
-          entering={FadeInDown.delay(300).duration(1000)}
-          style={styles.button}
-          onPress={handleLogin}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </AnimatedTouchable>
-        <AnimatedTouchable
-          entering={FadeInDown.delay(500).duration(1000)}
-          style={[styles.button, styles.button2]}
-          onPress={() => router.push("../")}
-        >
-          <Animated.Image
-            source={require("./assets/Google.png")}
-            style={{ width: 25, height: 25 }}
-          />
-        </AnimatedTouchable>
-      </View>
+        <View style={[styles.form, isKeyboardVisible && { flex: 1 }]}>
+          <Animated.View
+            entering={FadeInLeft.delay(400).duration(1000)}
+            style={styles.inputGroup}
+          >
+            <Text style={styles.label}>Name:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Upišite vaše ime"
+              value={email}
+              placeholderTextColor="rgba(0, 0, 0, 0.5)"// Add this line
+              onChangeText={(text) => setEmail(text)}
+            />
+          </Animated.View>
+
+          <Animated.View
+            entering={FadeInLeft.delay(600).duration(1000)}
+            style={styles.inputGroup}
+          >
+            <Text style={styles.label}>Lozinka:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder=". . . . . . . . . . ."
+              secureTextEntry
+              value={password}
+              placeholderTextColor="rgba(0, 0, 0, 0.5)" // Add this line
+              onChangeText={(text) => setPassword(text)}
+            />
+          </Animated.View>
+        </View>
+
+        {!isKeyboardVisible && (
+          <View style={styles.buttonsContainer}>
+            <AnimatedTouchable
+              entering={FadeInDown.delay(300).duration(1000)}
+              style={styles.button}
+              onPress={handleLogin}
+            >
+              <Text style={styles.buttonText}>Login</Text>
+            </AnimatedTouchable>
+            <AnimatedTouchable
+              entering={FadeInDown.delay(500).duration(1000)}
+              style={[styles.button, styles.button2]}
+              onPress={() => router.push("../")}
+            >
+              <Animated.Image
+                source={require("./assets/Google.png")}
+                style={{ width: 25, height: 25 }}
+              />
+            </AnimatedTouchable>
+          </View>
+        )}
+      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -153,6 +176,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     backgroundColor: "#F4CE14",
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   title: {
     height: "20%",
@@ -179,15 +205,15 @@ const styles = StyleSheet.create({
     height: "25%",
     justifyContent: "center",
     alignItems: "center",
-  },
+    },
   logo: {
     width: '80%',
     height: undefined,
     aspectRatio: 4.64,
   },
   form: {
-    height: "30%",
-    justifyContent: "space-evenly",
+    height: '30%',
+    justifyContent: 'space-evenly',
     alignItems: "center",
   },
   inputGroup: {

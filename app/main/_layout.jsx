@@ -1,8 +1,12 @@
 import React from "react";
+import { Image } from 'react-native'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MainScreen from "./index";
 import SubscriptionsScreen from "./subscriptions";
 import Header from './Header.jsx'
+
+import MapIcon from '../assets/MapIcon.png';
+import SubIcon from '../assets/SubIcon.png';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,17 +32,37 @@ export default function MainTabNavigator() {
       tabBarInactiveTintColor: "#000", // Inactive tab text color
     }}>
       <Tab.Screen
-        name="Main"
-        component={MainScreen}
-        options={{
-          headerTitle: () => <Header />,
-        }}
-      />
+          name="Main"
+          component={MainScreen}
+          options={{
+            headerTitle: () => <Header />,
+            tabBarIcon: ({ focused }) => (
+              <Image
+                source={MapIcon}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: focused ? '#000' : '#888',
+                }}
+              />
+            ),
+          }}
+        />
       <Tab.Screen
         name="Subscriptions"
         component={SubscriptionsScreen}
         options={{
           title: "Subscriptions",
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={SubIcon}
+              style={{
+                width: 24,
+                height: 24,
+                tintColor: focused ? '#000' : '#888',
+              }}
+            />
+          ),
         }}
       />
     </Tab.Navigator>

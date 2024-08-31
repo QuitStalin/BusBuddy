@@ -1,8 +1,16 @@
 // app/main/Header.js
 import React from "react";
 import { View, TextInput, Image, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useRouter } from 'expo-router'
 
 export default function Header() {
+  const router = useRouter();
+
+  const navigateToProfile = () => {
+    router.push("/profile"); // Navigate to the Profile screen
+  };
+
   return (
     <View style={styles.headerContainer}>
       <TextInput
@@ -10,10 +18,12 @@ export default function Header() {
         placeholder="Search"
         placeholderTextColor="#bdbdbd"
       />
+      <TouchableOpacity onPress={navigateToProfile}>
       <Image
         source={require("../assets/profile.jpg")} // Adjust the path as necessary
         style={styles.profileIcon}
       />
+      </TouchableOpacity>
     </View>
   );
 }

@@ -10,6 +10,8 @@ import {
   SafeAreaView,
   StatusBar,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -26,11 +28,15 @@ import {
   FadeInLeft,
 } from "react-native-reanimated";
 import axios from 'axios';
+import useKeyboardVisibility from './useKeyboardVisibility';
+
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function SignupScreen() {
   const router = useRouter();
+  const isKeyboardVisible = useKeyboardVisibility();
+
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,10 +51,11 @@ export default function SignupScreen() {
 
   const handleSignup = async () => {
     try {
-      const url = 'https://script.google.com/macros/s/AKfycbzVMxLLI1esJVVWl32sx2GZrsDeTeAEsbec5w9jks9fgkdEHI03hiXhrBo0eVfhT-0g/exec';
+      const url = 'https://script.google.com/macros/s/AKfycbzKLwcxoO4g34TwpvzT74fDcECwOfsglG6l2bo3B8TTQb1NbQB0R1KGy_Zh00QupElw/exec?';
       const response = await axios.get(url, {
         params: {
-          name: name,
+          type: 'registration',
+          username: name,
           email: email,
           password: password
         }
@@ -72,26 +79,34 @@ export default function SignupScreen() {
         translucent={true}
       />
 
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"} // Add this line
+      >
+
       <View style={styles.title}>
         <Animated.Text style={styles.titleText1}>Dobro Došli!</Animated.Text>
         <Animated.Text style={styles.titleText2}>Sign Up:</Animated.Text>
       </View>
 
+      {!isKeyboardVisible && (
       <View style={styles.logoContainer}>
         <Animated.Image
-          entering={FadeInUp.delay(200).duration(1000).springify()}
+          entering={FadeInUp.delay(0).duration(1000).springify()}
           source={require("./assets/BusBuddyLogo.png")}
           style={styles.logo}
         />
         <Animated.Text
-          entering={FadeInUp.delay(400).duration(1000)}
+          entering={FadeInUp.delay(300).duration(1000)}
           style={styles.regularText}
         >
           "Ride Smart, Ride Easy."
         </Animated.Text>
       </View>
+        )}
 
-      <View style={styles.form}>
+
+      <View style={[styles.form, isKeyboardVisible && { flex: 1 }]}>
         <Animated.View
           entering={FadeInLeft.delay(400).duration(1000)}
           style={styles.inputGroup}
@@ -101,6 +116,7 @@ export default function SignupScreen() {
             style={styles.input}
             placeholder="Upišite vaše ime"
             value={name}
+            placeholderTextColor="rgba(0, 0, 0, 0.3)"
             onChangeText={(text) => setName(text)}
           />
         </Animated.View>
@@ -115,6 +131,7 @@ export default function SignupScreen() {
             placeholder="mojemail@gmail.com"
             keyboardType="email-address"
             value={email}
+            placeholderTextColor="rgba(0, 0, 0, 0.3)"
             onChangeText={(text) => setEmail(text)}
           />
         </Animated.View>
@@ -129,10 +146,12 @@ export default function SignupScreen() {
             placeholder=". . . . . . . . . . ."
             secureTextEntry
             value={password}
+            placeholderTextColor="rgba(0, 0, 0, 0.3)"
             onChangeText={(text) => setPassword(text)}
           />
         </Animated.View>
       </View>
+      {!isKeyboardVisible && (
       <View style={styles.buttonsContainer}>
         <AnimatedTouchable
           entering={FadeInDown.delay(300).duration(1000)}
@@ -152,6 +171,8 @@ export default function SignupScreen() {
           />
         </AnimatedTouchable>
       </View>
+      )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
